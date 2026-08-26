@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LibMpv Player</string>
+    <string name="open_file">Open Video</string>
+    <string name="open_url">Open URL</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="stop">Stop</string>
+    <string name="enter_url">Enter video URL</string>
+    <string name="hint_url">https://example.com/video.mp4</string>
+    <string name="permission_required">Storage permission is required to play local videos</string>
+</resources>
