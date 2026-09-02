@@ -5,12 +5,13 @@ plugins {
 
 android {
     namespace = "com.example.libmpvplayer"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.libmpvplayer"
-        minSdk = 24
-        targetSdk = 35
+        // libmpv 1.0.0 requires minSdk 26
+        minSdk = 26
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0.0"
 

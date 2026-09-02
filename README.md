@@ -4,7 +4,8 @@ A complete, minimal Android video player that uses **libmpv** as the playback co
 
 - **Core**: [dev.jdtech.mpv:libmpv](https://central.sonatype.com/artifact/dev.jdtech.mpv/libmpv) (Maven Central)
 - **ABI**: **arm64-v8a only**
-- **Min SDK**: 24
+- **Min SDK**: 26
+- **Compile / Target SDK**: 36
 - **UI**: Material 3 + SurfaceView
 
 ## Features
@@ -18,7 +19,7 @@ A complete, minimal Android video player that uses **libmpv** as the playback co
 
 ## Requirements
 
-- Android Studio Ladybug (or newer) / AGP 8.7+
+- Android Studio Meerkat / Narwhal or newer (AGP 8.13+)
 - JDK 17
 - Device or emulator with **arm64-v8a** (most modern phones)
 
