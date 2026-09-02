@@ -6,6 +6,7 @@ A complete, minimal Android video player that uses **libmpv** as the playback co
 - **ABI**: **arm64-v8a only**
 - **Min SDK**: 26
 - **Compile / Target SDK**: 36
+- **AGP / Gradle**: 8.13.2 / 8.13
 - **UI**: Material 3 + SurfaceView
 
 ## Features
@@ -21,11 +22,14 @@ A complete, minimal Android video player that uses **libmpv** as the playback co
 
 - Android Studio Meerkat / Narwhal or newer (AGP 8.13+)
 - JDK 17
-- Device or emulator with **arm64-v8a** (most modern phones)
+- **Gradle 8.13** (AGP 8.13 is **not** compatible with Gradle 9.6+)
+- Device or emulator with **arm64-v8a**
 
 ## Build locally
 
 ```bash
+# Use Gradle 8.13 (not 9.x)
+gradle wrapper --gradle-version 8.13   # once, if you have no wrapper yet
 ./gradlew assembleDebug
 # APK: app/build/outputs/apk/debug/app-debug.apk
 ```
@@ -36,9 +40,12 @@ Release:
 ./gradlew assembleRelease
 ```
 
+> **Important:** Do not build with system Gradle 9.6+. You will get:
+> `Plugin relies on InternalProblems, a Gradle internal API that was removed in Gradle 9.6.0`.
+
 ## GitHub Actions
 
-The workflow `.github/workflows/build.yml` builds **arm64-v8a** debug & release APKs on every push to `main` and on tags, then uploads them as artifacts.
+The workflow pins **Gradle 8.13** via `gradle/actions/setup-gradle` and builds arm64-v8a debug/release APKs as artifacts.
 
 ## Project structure
 
