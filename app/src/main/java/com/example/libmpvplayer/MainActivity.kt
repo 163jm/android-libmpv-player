@@ -11,24 +11,26 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libmpvplayer.databinding.ActivityMainBinding
 
+/**
+ * Local video browser: request media permission, scan MediaStore, list videos, play on click.
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    private val openDocument = registerForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri: Uri? ->
-        uri?.let { playUri(it) }
-    }
+    private lateinit var adapter: VideoAdapter
 
     private val requestPermission = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { results ->
-        if (results.values.all { it }) {
-            openDocument.launch(arrayOf("video/*", "audio/*"))
+        if (results.values.any { it }) {
+            scanVideos()
         } else {
+            binding.emptyText.visibility = View.VISIBLE
+            binding.emptyText.setText(R.string.permission_required)
+            binding.progressBar.visibility = View.GONE
             Toast.makeText(this, R.string.permission_required, Toast.LENGTH_LONG).show()
         }
     }
@@ -38,23 +40,27 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Handle VIEW intent (opened from file manager etc.)
-        intent?.data?.let { playUri(it) }
+        setSupportActionBar(binding.toolbar)
 
-        binding.btnOpenFile.setOnClickListener {
+        adapter = VideoAdapter { item ->
+            playUri(item.contentUri)
+        }
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
+
+        binding.btnRefresh.setOnClickListener {
             if (hasStoragePermission()) {
-                openDocument.launch(arrayOf("video/*", "audio/*"))
+                scanVideos()
             } else {
                 requestStoragePermission()
             }
         }
 
+        // Optional: still allow network URL
         binding.btnOpenUrl.setOnClickListener {
-            val visible = binding.urlInputLayout.visibility == View.VISIBLE
-            binding.urlInputLayout.visibility = if (visible) View.GONE else View.VISIBLE
-            binding.btnPlayUrl.visibility = if (visible) View.GONE else View.VISIBLE
+            val visible = binding.urlPanel.visibility == View.VISIBLE
+            binding.urlPanel.visibility = if (visible) View.GONE else View.VISIBLE
         }
-
         binding.btnPlayUrl.setOnClickListener {
             val url = binding.urlEditText.text?.toString()?.trim()
             if (!url.isNullOrEmpty()) {
@@ -63,24 +69,54 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, R.string.enter_url, Toast.LENGTH_SHORT).show()
             }
         }
+
+        // VIEW intent from other apps
+        intent?.data?.let { playUri(it) }
+
+        if (hasStoragePermission()) {
+            scanVideos()
+        } else {
+            binding.emptyText.visibility = View.VISIBLE
+            binding.emptyText.setText(R.string.permission_hint)
+            requestStoragePermission()
+        }
+    }
+
+    private fun scanVideos() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.emptyText.visibility = View.GONE
+        binding.btnRefresh.isEnabled = false
+
+        Thread {
+            val list = VideoScanner.scan(this)
+            runOnUiThread {
+                binding.progressBar.visibility = View.GONE
+                binding.btnRefresh.isEnabled = true
+                adapter.submit(list)
+                binding.statusText.text = getString(R.string.video_count, list.size)
+                if (list.isEmpty()) {
+                    binding.emptyText.visibility = View.VISIBLE
+                    binding.emptyText.setText(R.string.no_videos)
+                } else {
+                    binding.emptyText.visibility = View.GONE
+                }
+            }
+        }.start()
     }
 
     private fun hasStoragePermission(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VIDEO) ==
-                    PackageManager.PERMISSION_GRANTED
+                PackageManager.PERMISSION_GRANTED
         } else {
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_GRANTED
+                PackageManager.PERMISSION_GRANTED
         }
     }
 
     private fun requestStoragePermission() {
         val perms = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            arrayOf(
-                Manifest.permission.READ_MEDIA_VIDEO,
-                Manifest.permission.READ_MEDIA_AUDIO
-            )
+            arrayOf(Manifest.permission.READ_MEDIA_VIDEO)
         } else {
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
@@ -92,7 +128,6 @@ class MainActivity : AppCompatActivity() {
             data = uri
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        // Take persistable permission for content URIs when possible
         if (uri.scheme == "content") {
             try {
                 contentResolver.takePersistableUriPermission(
@@ -100,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
             } catch (_: SecurityException) {
-                // Some providers don't support persistable permission
+                // MediaStore content URIs usually don't need persistable permission
             }
         }
         startActivity(intent)
