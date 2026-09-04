@@ -14,7 +14,8 @@ import dev.jdtech.mpv.MPVLib
 import java.util.concurrent.TimeUnit
 
 /**
- * Fullscreen player activity powered by libmpv.
+ * Fullscreen player powered by libmpv.
+ * 解码 / 方向 / 参数从 [PlayerPrefs] 读取。
  */
 class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.EventObserver {
 
@@ -35,33 +36,43 @@ class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.Event
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestedOrientation = PlayerPrefs.activityOrientation(this)
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.surfaceView.holder.addCallback(this)
-
         setupControls()
 
-        // Create libmpv instance
         mpv = MPVLib.create(this) ?: run {
             finish()
             return
         }
 
-        // Basic options before init
+        val hwdec = PlayerPrefs.hwdec(this)
+        val keepOpen = if (PlayerPrefs.keepOpen(this)) "yes" else "no"
+        val loop = if (PlayerPrefs.loop(this)) "inf" else "no"
+        val deint = if (PlayerPrefs.deinterlace(this)) "auto" else "no"
+        val cache = if (PlayerPrefs.cache(this)) "yes" else "no"
+        val hrSeek = if (PlayerPrefs.seekExact(this)) "yes" else "no"
+        val vol = PlayerPrefs.volume(this)
+
         mpv?.apply {
             setOptionString("vo", "gpu")
             setOptionString("gpu-context", "android")
-            setOptionString("hwdec", "auto")
+            setOptionString("hwdec", hwdec)
             setOptionString("ao", "audiotrack,opensles")
             setOptionString("force-window", "no")
             setOptionString("idle", "once")
-            setOptionString("keep-open", "yes")
+            setOptionString("keep-open", keepOpen)
+            setOptionString("loop-file", loop)
+            setOptionString("deinterlace", deint)
+            setOptionString("cache", cache)
+            setOptionString("hr-seek", hrSeek)
+            setOptionString("volume", vol.toString())
             init()
             addObserver(this@PlayerActivity)
-            // Observe useful properties
             observeProperty("time-pos", MPVLib.MpvFormat.MPV_FORMAT_DOUBLE)
             observeProperty("duration", MPVLib.MpvFormat.MPV_FORMAT_DOUBLE)
             observeProperty("pause", MPVLib.MpvFormat.MPV_FORMAT_FLAG)
@@ -69,12 +80,8 @@ class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.Event
     }
 
     private fun setupControls() {
-        binding.btnPlayPause.setOnClickListener {
-            togglePlayPause()
-        }
-        binding.btnStop.setOnClickListener {
-            finish()
-        }
+        binding.btnPlayPause.setOnClickListener { togglePlayPause() }
+        binding.btnStop.setOnClickListener { finish() }
         binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser && duration > 0) {
@@ -97,7 +104,6 @@ class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.Event
             }
         })
 
-        // Tap surface to toggle controls
         binding.surfaceView.setOnClickListener {
             binding.controls.visibility =
                 if (binding.controls.visibility == View.VISIBLE) View.GONE else View.VISIBLE
@@ -140,9 +146,7 @@ class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.Event
 
     private fun loadMedia(uri: Uri) {
         val path = when (uri.scheme) {
-            "content" -> {
-                uri.toString()
-            }
+            "content" -> uri.toString()
             "file" -> uri.path ?: uri.toString()
             else -> uri.toString()
         }
@@ -152,10 +156,8 @@ class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.Event
         handler.post(updateProgress)
     }
 
-    // ---- SurfaceHolder.Callback ----
     override fun surfaceCreated(holder: SurfaceHolder) {
         mpv?.attachSurface(holder.surface)
-        // Load media after surface is ready
         intent?.data?.let { loadMedia(it) }
     }
 
@@ -168,12 +170,10 @@ class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.Event
         mpv?.detachSurface()
     }
 
-    // ---- MPVLib.EventObserver ----
     override fun eventProperty(property: String) {}
     override fun eventProperty(property: String, value: Long) {}
     override fun eventProperty(property: String, value: Double) {
         when (property) {
-            "time-pos" -> { /* handled by progress runnable */ }
             "duration" -> duration = value
         }
     }
@@ -209,9 +209,5 @@ class PlayerActivity : AppCompatActivity(), SurfaceHolder.Callback, MPVLib.Event
         mpv?.destroy()
         mpv = null
         super.onDestroy()
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 }
