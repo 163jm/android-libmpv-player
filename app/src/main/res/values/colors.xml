@@ -12,6 +12,9 @@
     <color name="primary_container">#1565C0</color>
     <color name="on_primary">#FFFFFF</color>
 
+    <!-- Player controls overlay (semi-transparent black) -->
+    <color name="controls_bg">#CC000000</color>
+
     <!-- Launcher -->
     <color name="ic_launcher_background">#0D1B2A</color>
     <color name="ic_launcher_accent">#4FC3F7</color>
