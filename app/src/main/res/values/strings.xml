@@ -14,4 +14,28 @@
     <string name="video_count">共 %d 个视频</string>
     <string name="video_count_zero">共 0 个视频</string>
     <string name="scanning">正在扫描…</string>
+
+    <string name="settings">设置</string>
+    <string name="section_decode">解码</string>
+    <string name="section_display">显示</string>
+    <string name="section_playback">播放参数</string>
+    <string name="hwdec_label">解码方式</string>
+    <string name="hwdec_auto">自动硬解 (auto)</string>
+    <string name="hwdec_yes">强制硬解 (yes)</string>
+    <string name="hwdec_mediacodec">MediaCodec</string>
+    <string name="hwdec_mediacodec_copy">MediaCodec Copy</string>
+    <string name="hwdec_no">软解 (no)</string>
+    <string name="orientation_label">播放屏幕方向</string>
+    <string name="orient_sensor">自动旋转</string>
+    <string name="orient_landscape">横屏</string>
+    <string name="orient_portrait">竖屏</string>
+    <string name="orient_reverse_landscape">反向横屏</string>
+    <string name="keep_open">播放结束后保持最后一帧</string>
+    <string name="loop_one">循环播放当前文件</string>
+    <string name="seek_exact">精确跳转 (hr-seek)</string>
+    <string name="deinterlace">反交错</string>
+    <string name="enable_cache">启用网络缓存</string>
+    <string name="volume_label">音量</string>
+    <string name="volume_value">音量：%d%%</string>
+    <string name="settings_hint">修改解码与方向后，重新打开视频生效。</string>
 </resources>
