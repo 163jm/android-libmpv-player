@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?android:attr/colorBackground">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.Material3.Dark.ActionBar"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/settings"
+        app:titleTextColor="@android:color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/section_decode"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/hwdec_label"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerHwdec"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/section_display"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:paddingBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/orientation_label"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerOrientation"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/section_playback"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:paddingBottom="8dp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchKeepOpen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/keep_open"
+                android:paddingVertical="8dp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchLoop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/loop_one"
+                android:paddingVertical="8dp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchSeekExact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/seek_exact"
+                android:paddingVertical="8dp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchDeinterlace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/deinterlace"
+                android:paddingVertical="8dp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/switchCache"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/enable_cache"
+                android:paddingVertical="8dp" />
+
+            <TextView
+                android:id="@+id/volumeLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/volume_label"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderVolume"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:valueFrom="0"
+                android:valueTo="150"
+                android:stepSize="5"
+                android:value="100" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/settings_hint"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?android:attr/textColorSecondary" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
