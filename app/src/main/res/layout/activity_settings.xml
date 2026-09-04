@@ -72,35 +72,35 @@
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 android:paddingBottom="8dp" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchKeepOpen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/keep_open"
                 android:paddingVertical="8dp" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchLoop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/loop_one"
                 android:paddingVertical="8dp" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchSeekExact"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/seek_exact"
                 android:paddingVertical="8dp" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchDeinterlace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/deinterlace"
                 android:paddingVertical="8dp" />
 
-            <com.google.android.material.materialswitch.MaterialSwitch
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switchCache"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
