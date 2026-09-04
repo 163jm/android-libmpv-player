@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libmpvplayer.databinding.ActivityMainBinding
 
 /**
- * Local video browser: request media permission, scan MediaStore, list videos, play on click.
+ * 本机视频浏览：申请媒体权限 → 扫描 MediaStore 持久化存储 → 列表展示 → 点击播放。
+ * 无文件选择器。
  */
 class MainActivity : AppCompatActivity() {
 
@@ -28,9 +29,10 @@ class MainActivity : AppCompatActivity() {
         if (results.values.any { it }) {
             scanVideos()
         } else {
+            binding.swipeRefresh.isRefreshing = false
+            binding.progressBar.visibility = View.GONE
             binding.emptyText.visibility = View.VISIBLE
             binding.emptyText.setText(R.string.permission_required)
-            binding.progressBar.visibility = View.GONE
             Toast.makeText(this, R.string.permission_required, Toast.LENGTH_LONG).show()
         }
     }
@@ -48,15 +50,9 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
 
-        binding.btnRefresh.setOnClickListener {
-            if (hasStoragePermission()) {
-                scanVideos()
-            } else {
-                requestStoragePermission()
-            }
-        }
+        binding.btnRefresh.setOnClickListener { ensurePermissionAndScan() }
+        binding.swipeRefresh.setOnRefreshListener { ensurePermissionAndScan() }
 
-        // Optional: still allow network URL
         binding.btnOpenUrl.setOnClickListener {
             val visible = binding.urlPanel.visibility == View.VISIBLE
             binding.urlPanel.visibility = if (visible) View.GONE else View.VISIBLE
@@ -70,7 +66,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // VIEW intent from other apps
         intent?.data?.let { playUri(it) }
 
         if (hasStoragePermission()) {
@@ -82,15 +77,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun ensurePermissionAndScan() {
+        if (hasStoragePermission()) {
+            scanVideos()
+        } else {
+            requestStoragePermission()
+        }
+    }
+
     private fun scanVideos() {
         binding.progressBar.visibility = View.VISIBLE
+        binding.swipeRefresh.isRefreshing = true
         binding.emptyText.visibility = View.GONE
         binding.btnRefresh.isEnabled = false
+        binding.statusText.setText(R.string.scanning)
 
         Thread {
             val list = VideoScanner.scan(this)
             runOnUiThread {
                 binding.progressBar.visibility = View.GONE
+                binding.swipeRefresh.isRefreshing = false
                 binding.btnRefresh.isEnabled = true
                 adapter.submit(list)
                 binding.statusText.text = getString(R.string.video_count, list.size)
@@ -135,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
             } catch (_: SecurityException) {
-                // MediaStore content URIs usually don't need persistable permission
+                // MediaStore URI 通常不需要 persistable permission
             }
         }
         startActivity(intent)
