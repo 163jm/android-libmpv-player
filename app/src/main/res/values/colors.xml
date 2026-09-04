@@ -6,6 +6,13 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Theme colors (referenced by Theme.LibMpvPlayer) -->
+    <color name="primary">#0D47A1</color>
+    <color name="primary_container">#1565C0</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Launcher -->
     <color name="ic_launcher_background">#0D1B2A</color>
     <color name="ic_launcher_accent">#4FC3F7</color>
     <color name="ic_launcher_play">#FFFFFF</color>
