@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">LibMpv Player</string>
-    <string name="refresh">Refresh</string>
-    <string name="open_url">Open URL</string>
-    <string name="play">Play</string>
-    <string name="pause">Pause</string>
-    <string name="stop">Stop</string>
-    <string name="enter_url">Enter video URL</string>
+    <string name="app_name">LibMpv 播放器</string>
+    <string name="refresh">刷新</string>
+    <string name="open_url">网络地址</string>
+    <string name="play">播放</string>
+    <string name="pause">暂停</string>
+    <string name="stop">停止</string>
+    <string name="enter_url">请输入视频地址</string>
     <string name="hint_url">https://example.com/video.mp4</string>
-    <string name="permission_required">Media permission is required to list local videos</string>
-    <string name="permission_hint">Grant media permission to scan local videos</string>
-    <string name="no_videos">No videos found on this device</string>
-    <string name="video_count">%d videos</string>
-    <string name="video_count_zero">0 videos</string>
+    <string name="permission_required">需要媒体权限才能扫描本机视频</string>
+    <string name="permission_hint">请授予媒体权限以扫描本机视频</string>
+    <string name="no_videos">未找到本机视频文件</string>
+    <string name="video_count">共 %d 个视频</string>
+    <string name="video_count_zero">共 0 个视频</string>
+    <string name="scanning">正在扫描…</string>
 </resources>

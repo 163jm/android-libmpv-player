@@ -7,6 +7,5 @@ data class VideoItem(
     val title: String,
     val contentUri: Uri,
     val sizeBytes: Long,
-    val durationMs: Long,
-    val dateAddedSec: Long
+    val durationMs: Long
 )
