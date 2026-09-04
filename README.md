@@ -5,6 +5,7 @@
 - **内核**: [dev.jdtech.mpv:libmpv](https://central.sonatype.com/artifact/dev.jdtech.mpv/libmpv) `1.0.0`
 - **ABI**: 仅 arm64-v8a
 - **Min / Target SDK**: 26 / 36
+- **构建要求**: **JDK 21**（libmpv 1.0.0 为 Java 21 字节码）+ Gradle 8.13
 
 ## 功能
 
@@ -17,5 +18,11 @@
 ## 构建
 
 ```bash
+# 请使用 JDK 21
+java -version   # 应显示 21.x
+
 ./gradlew assembleDebug
+# APK: app/build/outputs/apk/debug/app-debug.apk
 ```
+
+> 若出现 `class file has wrong version 65.0, should be 61.0`，说明当前用的是 JDK 17，请换成 JDK 21。
